@@ -1,131 +1,216 @@
-// Chat Widget Script (clean version – no powered by)
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Create and inject styles
-    const styles = `
+    /************************************
+     * 1. LOAD AND INJECT FONTS + STYLE *
+     ************************************/
+    const font = document.createElement("link");
+    font.rel = "stylesheet";
+    font.href = "https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css";
+    document.head.appendChild(font);
+
+    const css = `
         .n8n-chat-widget {
-            --chat--color-primary: var(--n8n-chat-primary-color, #854fff);
-            --chat--color-secondary: var(--n8n-chat-secondary-color, #6b3fd4);
-            --chat--color-background: var(--n8n-chat-background-color, #ffffff);
-            --chat--color-font: var(--n8n-chat-font-color, #333333);
-            font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --primary: var(--chat-primary, #854fff);
+            --secondary: var(--chat-secondary, #6b3fd4);
+            --bg: var(--chat-bg, #fff);
+            --text: var(--chat-text, #333);
+            font-family: 'Geist Sans', sans-serif;
+        }
+        .chat-toggle {
+            position: fixed; bottom: 22px; right: 22px;
+            width: 62px; height: 62px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+            font-size: 26px;
+            transition: .25s ease;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .chat-toggle:hover { transform: scale(1.08); }
+
+        .chat-container {
+            position: fixed; bottom: 22px; right: 22px;
+            width: 380px; height: 600px;
+            border-radius: 16px; overflow: hidden;
+            background: var(--bg);
+            box-shadow: 0 8px 26px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity .3s ease, transform .3s ease;
+            z-index: 9998;
+        }
+        .chat-container.open {
+            opacity: 1; pointer-events: auto;
+            transform: translateY(0);
         }
 
-        .n8n-chat-widget .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: none;
-            width: 380px;
-            height: 600px;
-            background: var(--chat--color-background);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(133, 79, 255, 0.15);
-            border: 1px solid rgba(133, 79, 255, 0.2);
-            overflow: hidden;
-            font-family: inherit;
+        .chat-header {
+            padding: 16px; display: flex; align-items: center; gap: 10px;
+            background: var(--bg);
+            border-bottom: 1px solid rgba(0,0,0,0.07);
         }
-        
-        /* (todo el CSS igual que antes)… */
+        .chat-header img { width: 30px; height: 30px; }
+        .chat-header span { font-weight: 600; font-size: 17px; }
+        .chat-close { margin-left: auto; cursor: pointer; opacity: .55; font-size: 22px; }
+        .chat-close:hover { opacity: 1; }
+
+        .chat-body { flex: 1; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+
+        .msg {
+            max-width: 78%; padding: 12px 16px; border-radius: 12px;
+            font-size: 14px; line-height: 1.45;
+        }
+        .msg.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+        }
+        .msg.bot {
+            align-self: flex-start;
+            background: var(--bg);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .chat-input {
+            display: flex; gap: 8px;
+            padding: 16px;
+            border-top: 1px solid rgba(0,0,0,0.07);
+        }
+        .chat-input textarea {
+            flex: 1; border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.15);
+            resize: none; padding: 10px;
+            font-size: 14px;
+        }
+        .chat-input button {
+            padding: 0 20px;
+            border-radius: 10px;
+            border: none; cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; font-weight: 600;
+        }
     `;
+    const style = document.createElement("style");
+    style.textContent = css;
+    document.head.appendChild(style);
 
-    // Load Geist font
-    const fontLink = document.createElement('link');
-    fontLink.rel = 'stylesheet';
-    fontLink.href = 'https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css';
-    document.head.appendChild(fontLink);
 
-    // Inject styles
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
+    /************************************
+     * 2. MERGE USER CONFIG
+     ************************************/
+    const cfg = window.ChatWidgetConfig;
 
-    // Clean Default Config
-    const defaultConfig = {
-        webhook: { url: '', route: '' },
-        branding: {
-            logo: '',
-            name: '',
-            welcomeText: '',
-            responseTimeText: '',
-            poweredBy: {}
-        },
-        style: {
-            primaryColor: '',
-            secondaryColor: '',
-            position: 'right',
-            backgroundColor: '#ffffff',
-            fontColor: '#333333'
-        }
+    const themeVars = {
+        "--chat-primary": cfg.style.primaryColor,
+        "--chat-secondary": cfg.style.secondaryColor,
+        "--chat-bg": cfg.style.backgroundColor,
+        "--chat-text": cfg.style.fontColor,
     };
 
-    // Merge with user config
-    const config = window.ChatWidgetConfig ? {
-        webhook: { ...defaultConfig.webhook, ...window.ChatWidgetConfig.webhook },
-        branding: { ...defaultConfig.branding, ...window.ChatWidgetConfig.branding },
-        style: { ...defaultConfig.style, ...window.ChatWidgetConfig.style }
-    } : defaultConfig;
 
-    if (window.N8NChatWidgetInitialized) return;
-    window.N8NChatWidgetInitialized = true;
+    /************************************
+     * 3. BUILD CHAT WIDGET DOM
+     ************************************/
+    const container = document.createElement("div");
+    container.className = "chat-container";
 
-    let currentSessionId = '';
+    Object.entries(themeVars).forEach(([k, v]) => container.style.setProperty(k, v));
 
-    // Create widget container
-    const widgetContainer = document.createElement('div');
-    widgetContainer.className = 'n8n-chat-widget';
-
-    widgetContainer.style.setProperty('--n8n-chat-primary-color', config.style.primaryColor);
-    widgetContainer.style.setProperty('--n8n-chat-secondary-color', config.style.secondaryColor);
-    widgetContainer.style.setProperty('--n8n-chat-background-color', config.style.backgroundColor);
-    widgetContainer.style.setProperty('--n8n-chat-font-color', config.style.fontColor);
-
-    const chatContainer = document.createElement('div');
-    chatContainer.className = `chat-container${config.style.position === 'left' ? ' position-left' : ''}`;
-
-    const newConversationHTML = `
-        <div class="brand-header">
-            <img src="${config.branding.logo}" alt="${config.branding.name}">
-            <span>${config.branding.name}</span>
-            <button class="close-button">×</button>
+    container.innerHTML = `
+        <div class="chat-header">
+            <img src="${cfg.branding.logo}" />
+            <span>${cfg.branding.name}</span>
+            <div class="chat-close">×</div>
         </div>
-        <div class="new-conversation">
-            <h2 class="welcome-text">${config.branding.welcomeText}</h2>
-            <button class="new-chat-btn">Send us a message</button>
-            <p class="response-text">${config.branding.responseTimeText}</p>
+
+        <div class="chat-body"></div>
+
+        <div class="chat-input">
+            <textarea placeholder="Escribe tu mensaje..."></textarea>
+            <button>Enviar</button>
         </div>
     `;
 
-    const chatInterfaceHTML = `
-        <div class="chat-interface">
-            <div class="brand-header">
-                <img src="${config.branding.logo}" alt="${config.branding.name}">
-                <span>${config.branding.name}</span>
-                <button class="close-button">×</button>
-            </div>
-            <div class="chat-messages"></div>
-            <div class="chat-input">
-                <textarea placeholder="Type your message..." rows="1"></textarea>
-                <button type="submit">Send</button>
-            </div>
-            <div class="chat-footer"></div>
-        </div>
-    `;
+    const toggle = document.createElement("button");
+    toggle.className = "chat-toggle";
+    toggle.innerHTML = "💬";
 
-    chatContainer.innerHTML = newConversationHTML + chatInterfaceHTML;
+    document.body.appendChild(toggle);
+    document.body.appendChild(container);
 
-    const toggleButton = document.createElement('button');
-    toggleButton.className = `chat-toggle${config.style.position === 'left' ? ' position-left' : ''}`;
-    toggleButton.innerHTML = `💬`;
+    const body = container.querySelector(".chat-body");
+    const textarea = container.querySelector("textarea");
+    const sendBtn = container.querySelector("button");
 
-    widgetContainer.appendChild(chatContainer);
-    widgetContainer.appendChild(toggleButton);
 
-    /*** ESTA ERA LA LÍNEA QUE DABA ERROR ***/
-    document.body.appendChild(widgetContainer);
-    /*****************************************/
+    /************************************
+     * 4. MESSAGE HELPERS
+     ************************************/
+    const addMsg = (text, type) => {
+        const div = document.createElement("div");
+        div.className = `msg ${type}`;
+        div.textContent = text;
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+    };
 
-    /* ...resto del código idéntico... */
+
+    /************************************
+     * 5. BACKEND COMMUNICATION
+     ************************************/
+    let sessionId = crypto.randomUUID();
+
+    async function sendToBot(message) {
+        const payload = {
+            action: "sendMessage",
+            sessionId,
+            route: cfg.webhook.route,
+            chatInput: message,
+            metadata: { userId: "" }
+        };
+
+        const res = await fetch(cfg.webhook.url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        return await res.json();
+    }
+
+
+    /************************************
+     * 6. EVENT HANDLERS
+     ************************************/
+    toggle.addEventListener("click", () => {
+        container.classList.toggle("open");
+    });
+
+    container.querySelector(".chat-close").addEventListener("click", () => {
+        container.classList.remove("open");
+    });
+
+    sendBtn.addEventListener("click", async () => {
+        const msg = textarea.value.trim();
+        if (!msg) return;
+
+        addMsg(msg, "user");
+        textarea.value = "";
+
+        const response = await sendToBot(msg);
+        const botReply = Array.isArray(response) ? response[0].output : response.output;
+
+        addMsg(botReply, "bot");
+    });
+
+    textarea.addEventListener("keypress", e => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendBtn.click();
+        }
+    });
 
 });
