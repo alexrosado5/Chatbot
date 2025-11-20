@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Probando Chatbot EnTuPunto</title>
+</head>
+<body>
+
+    <!-- Widget Configuration -->
+    <script>
+        window.ChatWidgetConfig = {
+            webhook: {
+                url: '<your n8n webhook URL>',
+                route: 'general'
+            },
+            branding: {
+                logo: '<your company logo URL>',
+                name: 'nocodecreative.io',
+                welcomeText: 'Hi 👋, how can we help?',
+                responseTimeText: 'We typically respond right away'
+            },
+            style: {
+                primaryColor: '#854fff',
+                secondaryColor: '#6b3fd4',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#333333'
+            }
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
+
+</body>
+</html>
