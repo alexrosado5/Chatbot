@@ -3,9 +3,8 @@ const css = `
     --primary: var(--chat-primary, #ffa22b);
     --secondary: var(--chat-secondary, #e17a00);
     --bg: var(--chat-bg, #ffffff);
-    --text: var(--chat-text, #333);
-    --radius: 14px;
-    font-family: 'Geist Sans', sans-serif;
+    --text: var(--chat-text, #333333);
+    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Toggle button */
@@ -13,19 +12,19 @@ const css = `
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 65px;
-    height: 65px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: #fff;
+    color: white;
     font-size: 28px;
-    border: none;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: none;
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    transition: transform .2s ease, box-shadow .2s ease;
+    transition: 0.25s ease;
 }
 .chat-toggle:hover {
     transform: scale(1.08);
@@ -40,14 +39,14 @@ const css = `
     height: 600px;
     background: var(--bg);
     border-radius: 18px;
-    box-shadow: 0 16px 32px rgba(0,0,0,0.25);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.18);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     opacity: 0;
     pointer-events: none;
     transform: translateY(20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: 0.32s ease;
 }
 .chat-container.open {
     opacity: 1;
@@ -57,16 +56,20 @@ const css = `
 
 /* Header */
 .chat-header {
+    padding: 16px;
     display: flex;
     align-items: center;
-    padding: 16px;
     gap: 10px;
     border-bottom: 1px solid #eee;
 }
 .chat-header img {
     width: 34px;
     height: 34px;
-    border-radius: 10px;
+    border-radius: 8px;
+}
+.chat-header span {
+    font-size: 17px;
+    font-weight: 600;
 }
 .chat-close {
     margin-left: auto;
@@ -78,65 +81,64 @@ const css = `
     opacity: 1;
 }
 
-/* Message area */
+/* Chat body */
 .chat-body {
     flex: 1;
-    overflow-y: auto;
     padding: 20px;
+    overflow-y: auto;
+    background: #fafafa;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: #fafafa;
 }
 
-/* GENERAL MESSAGE STYLE */
+/* Message bubbles */
 .msg {
     max-width: 80%;
     padding: 12px 16px;
-    border-radius: var(--radius);
+    border-radius: 14px;
     font-size: 15px;
     line-height: 1.45;
-    animation: fadeIn 0.2s ease forwards;
+    animation: fadeIn 0.25s ease;
 }
 
-/* USER MESSAGE (orange bubble, white text) */
+/* USER MESSAGE — orange with black text */
 .msg.user {
     align-self: flex-end;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: #fff;
+    color: black;
+    font-weight: 500;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
 }
 
-/* BOT MESSAGE (white bubble with shadow) */
+/* BOT MESSAGE — white clean bubble */
 .msg.bot {
     align-self: flex-start;
     background: white;
     color: var(--text);
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.1);
     border-bottom-left-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 /* Input */
 .chat-input {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     padding: 14px;
+    display: flex;
+    gap: 10px;
     border-top: 1px solid #eee;
-    background: #fff;
 }
 .chat-input textarea {
     flex: 1;
-    border-radius: 10px;
     padding: 12px;
+    font-size: 14px;
+    border-radius: 10px;
     border: 1px solid #ddd;
     resize: none;
-    font-size: 14px;
 }
 .chat-input button {
-    padding: 10px 20px;
+    padding: 10px 22px;
     border-radius: 10px;
     border: none;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -146,7 +148,7 @@ const css = `
 
 /* Animation */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 `;
