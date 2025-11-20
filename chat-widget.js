@@ -160,6 +160,8 @@
             background: var(--chat--color-background);
             display: flex;
             flex-direction: column;
+            animation: message-appear 0.35s ease-out;
+
         }
 
         .n8n-chat-widget .chat-message {
