@@ -346,8 +346,8 @@
             </div>
             <div class="chat-messages"></div>
             <div class="chat-input">
-                <textarea placeholder="Type your message here..." rows="1"></textarea>
-                <button type="submit">Send</button>
+                <textarea placeholder="Escribe aquí tu mensaje..." rows="1"></textarea>
+                <button type="submit">Enviar</button>
             </div>
         </div>
     `;
