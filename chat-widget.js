@@ -10,17 +10,6 @@
             font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        @keyframes message-appear {
-            0% {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .n8n-chat-widget .chat-container {
             position: fixed;
             bottom: 20px;
@@ -160,8 +149,6 @@
             background: var(--chat--color-background);
             display: flex;
             flex-direction: column;
-            animation: message-appear 0.35s ease-out;
-
         }
 
         .n8n-chat-widget .chat-message {
@@ -264,6 +251,26 @@
             height: 24px;
             fill: currentColor;
         }
+
+        .n8n-chat-widget .chat-footer {
+            padding: 8px;
+            text-align: center;
+            background: var(--chat--color-background);
+            border-top: 1px solid rgba(133, 79, 255, 0.1);
+        }
+
+        .n8n-chat-widget .chat-footer a {
+            color: var(--chat--color-primary);
+            text-decoration: none;
+            font-size: 12px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            font-family: inherit;
+        }
+
+        .n8n-chat-widget .chat-footer a:hover {
+            opacity: 1;
+        }
     `;
 
     // Load Geist font
@@ -279,12 +286,19 @@
 
     // Default configuration
     const defaultConfig = {
-        webhook: { url: '', route: '' },
+        webhook: {
+            url: '',
+            route: ''
+        },
         branding: {
             logo: '',
             name: '',
             welcomeText: '',
-            responseTimeText: ''
+            responseTimeText: '',
+            poweredBy: {
+                text: 'Powered by n8n',
+                link: 'https://n8n.partnerlinks.io/m8a94i19zhqq?utm_source=nocodecreative.io'
+            }
         },
         style: {
             primaryColor: '',
@@ -295,7 +309,7 @@
         }
     };
 
-    // Merge config
+    // Merge user config with defaults
     const config = window.ChatWidgetConfig ? 
         {
             webhook: { ...defaultConfig.webhook, ...window.ChatWidgetConfig.webhook },
@@ -303,14 +317,17 @@
             style: { ...defaultConfig.style, ...window.ChatWidgetConfig.style }
         } : defaultConfig;
 
+    // Prevent multiple initializations
     if (window.N8NChatWidgetInitialized) return;
     window.N8NChatWidgetInitialized = true;
 
     let currentSessionId = '';
 
+    // Create widget container
     const widgetContainer = document.createElement('div');
     widgetContainer.className = 'n8n-chat-widget';
-
+    
+    // Set CSS variables for colors
     widgetContainer.style.setProperty('--n8n-chat-primary-color', config.style.primaryColor);
     widgetContainer.style.setProperty('--n8n-chat-secondary-color', config.style.secondaryColor);
     widgetContainer.style.setProperty('--n8n-chat-background-color', config.style.backgroundColor);
@@ -331,7 +348,7 @@
                 <svg class="message-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
                 </svg>
-                Envíanos un mensaje
+                Send us a message
             </button>
             <p class="response-text">${config.branding.responseTimeText}</p>
         </div>
@@ -346,14 +363,17 @@
             </div>
             <div class="chat-messages"></div>
             <div class="chat-input">
-                <textarea placeholder="Escribe aquí tu mensaje..." rows="1"></textarea>
-                <button type="submit">Enviar</button>
+                <textarea placeholder="Type your message here..." rows="1"></textarea>
+                <button type="submit">Send</button>
+            </div>
+            <div class="chat-footer">
+                <a href="${config.branding.poweredBy.link}" target="_blank">${config.branding.poweredBy.text}</a>
             </div>
         </div>
     `;
     
     chatContainer.innerHTML = newConversationHTML + chatInterfaceHTML;
-
+    
     const toggleButton = document.createElement('button');
     toggleButton.className = `chat-toggle${config.style.position === 'left' ? ' position-left' : ''}`;
     toggleButton.innerHTML = `
@@ -371,7 +391,9 @@
     const textarea = chatContainer.querySelector('textarea');
     const sendButton = chatContainer.querySelector('button[type="submit"]');
 
-    function generateUUID() { return crypto.randomUUID(); }
+    function generateUUID() {
+        return crypto.randomUUID();
+    }
 
     async function startNewConversation() {
         currentSessionId = generateUUID();
@@ -379,13 +401,17 @@
             action: "loadPreviousSession",
             sessionId: currentSessionId,
             route: config.webhook.route,
-            metadata: { userId: "" }
+            metadata: {
+                userId: ""
+            }
         }];
 
         try {
             const response = await fetch(config.webhook.url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(data)
             });
 
@@ -410,7 +436,9 @@
             sessionId: currentSessionId,
             route: config.webhook.route,
             chatInput: message,
-            metadata: { userId: "" }
+            metadata: {
+                userId: ""
+            }
         };
 
         const userMessageDiv = document.createElement('div');
@@ -422,7 +450,9 @@
         try {
             const response = await fetch(config.webhook.url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(messageData)
             });
             
@@ -463,8 +493,11 @@
         chatContainer.classList.toggle('open');
     });
 
+    // Add close button handlers
     const closeButtons = chatContainer.querySelectorAll('.close-button');
-    closeButtons.forEach(button =>
-        button.addEventListener('click', () => chatContainer.classList.remove('open'))
-    );
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            chatContainer.classList.remove('open');
+        });
+    });
 })();
