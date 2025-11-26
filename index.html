@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Probando Chatbot EnTuPunto</title>
+</head>
+<body>
 
     <!-- Widget Configuration -->
     <script>
@@ -8,19 +15,22 @@
             },
             branding: {
                 logo: 'https://raw.githubusercontent.com/alexrosado5/Chatbot/main/avatar%20copy.png',
-                name: 'EnTuPunto', // Your company name
-                welcomeText: 'Hola! Como puedo ayudarte hoy?', //Welcome message
-                responseTimeText: 'Solemos responder bastante rapido...' //Response time message
+                name: 'EnTuPunto',
+                welcomeText: 'Hola! Como puedo ayudarte hoy?',
+                responseTimeText: 'Solemos responder bastante rapido...'
             },
             style: {
-                primaryColor: '#ffa22b', //Primary color
-                secondaryColor: '#000000', //Secondary color
-                position: 'right', //Position of the widget (left or right)
-                backgroundColor: '#ffffff', //Background color of the chat widget
-                fontColor: '#333333' //Text color for messages and interface
+                primaryColor: '#ffa22b',
+                secondaryColor: '#000000',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#333333'
             }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
-    <!-- Widget Script -->
-    
+
+    <!-- Carga tu widget personalizado (SIN powered by) -->
+    <script src="./chat-widget.js?v=3"></script>
+
+</body>
+</html>
