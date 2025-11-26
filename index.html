@@ -1,36 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Probando Chatbot EnTuPunto</title>
-</head>
-<body>
-
     <!-- Widget Configuration -->
     <script>
         window.ChatWidgetConfig = {
             webhook: {
-                url: 'https://alexferran.app.n8n.cloud/webhook/dfc6baa1-48c5-4e17-ac80-dab463249594/chat',
+                url: '<https://alexferran.app.n8n.cloud/webhook/dfc6baa1-48c5-4e17-ac80-dab463249594/chat>',
                 route: 'general'
             },
             branding: {
-                logo: 'https://raw.githubusercontent.com/alexrosado5/Chatbot/main/avatar%20copy.png',
-                name: 'EnTuPunto',
-                welcomeText: 'Hola! Como puedo ayudarte hoy?',
-                responseTimeText: 'Solemos responder bastante rapido'
+                logo: '<>',
+                name: 'nocodecreative.io', // Your company name
+                welcomeText: 'Hi 👋, how can we help?', //Welcome message
+                responseTimeText: 'We typically respond right away' //Response time message
             },
             style: {
-                primaryColor: '#ffa22b',
-                secondaryColor: '#000000',
-                position: 'right',
-                backgroundColor: '#ffffff',
-                fontColor: '#333333'
+                primaryColor: '#854fff', //Primary color
+                secondaryColor: '#6b3fd4', //Secondary color
+                position: 'right', //Position of the widget (left or right)
+                backgroundColor: '#ffffff', //Background color of the chat widget
+                fontColor: '#333333' //Text color for messages and interface
             }
         };
     </script>
-
-    <!-- Carga tu widget personalizado (SIN powered by) -->
     <script src="./chat-widget.js?v=3"></script>
-
-</body>
-</html>
