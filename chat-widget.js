@@ -295,10 +295,6 @@
             name: '',
             welcomeText: '',
             responseTimeText: '',
-            poweredBy: {
-                text: '',
-                link: 'https://n8n.partnerlinks.io/m8a94i19zhqq?utm_source=nocodecreative.io'
-            }
         },
         style: {
             primaryColor: '',
