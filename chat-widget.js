@@ -362,6 +362,13 @@
 
     function generateUUID() { return crypto.randomUUID(); }
 
+    // ✅ FUNCIÓN PARA RENDERIZAR MARKDOWN BÁSICO
+    function parseMarkdown(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // negritas
+            .replace(/\*(.*?)\*/g, "<em>$1</em>"); // cursivas
+    }
+
     async function startNewConversation() {
         currentSessionId = generateUUID();
         const data = [{
@@ -386,9 +393,9 @@
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
 
-            // *** CAMBIO AQUI ***
-            botMessageDiv.innerHTML = (Array.isArray(responseData) ? responseData[0].output : responseData.output)
-                .replace(/\n/g, "<br>");
+            botMessageDiv.innerHTML = parseMarkdown(
+                (Array.isArray(responseData) ? responseData[0].output : responseData.output)
+            ).replace(/\n/g, "<br>");
 
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -424,9 +431,9 @@
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
 
-            // *** CAMBIO AQUI ***
-            botMessageDiv.innerHTML = (Array.isArray(data) ? data[0].output : data.output)
-                .replace(/\n/g, "<br>");
+            botMessageDiv.innerHTML = parseMarkdown(
+                (Array.isArray(data) ? data[0].output : data.output)
+            ).replace(/\n/g, "<br>");
 
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
