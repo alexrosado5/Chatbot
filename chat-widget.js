@@ -1,4 +1,4 @@
-// Chat Widget Script
+// Chat Widget Script (con indicador typing estilo WhatsApp)
 (function() {
     // Create and inject styles
     const styles = `
@@ -252,6 +252,34 @@
             height: 24px;
             fill: currentColor;
         }
+
+        /* === TYPING INDICATOR (WHATSAPP STYLE) === */
+        .n8n-chat-widget .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 8px 0;
+            align-self: flex-start;
+        }
+
+        .n8n-chat-widget .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--chat--color-primary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing-bounce 1.4s infinite both;
+        }
+
+        .n8n-chat-widget .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .n8n-chat-widget .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .n8n-chat-widget .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing-bounce {
+            0%   { transform: translateY(0); opacity: 0.3; }
+            50%  { transform: translateY(-4px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 0.3; }
+        }
     `;
 
     // Load Geist font
@@ -362,11 +390,10 @@
 
     function generateUUID() { return crypto.randomUUID(); }
 
-    // ✅ FUNCIÓN PARA RENDERIZAR MARKDOWN BÁSICO
     function parseMarkdown(text) {
         return text
-            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // negritas
-            .replace(/\*(.*?)\*/g, "<em>$1</em>"); // cursivas
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+            .replace(/\*(.*?)\*/g, "<em>$1</em>");
     }
 
     async function startNewConversation() {
@@ -419,6 +446,13 @@
         messagesContainer.appendChild(userMessageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+        // --- Indicador typing WhatsApp ---
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
         try {
             const response = await fetch(config.webhook.url, {
                 method: 'POST',
@@ -427,6 +461,9 @@
             });
 
             const data = await response.json();
+
+            // Quitar typing...
+            typingIndicator.remove();
 
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
@@ -438,6 +475,7 @@
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
+            typingIndicator.remove();
             console.error('Error:', error);
         }
     }
