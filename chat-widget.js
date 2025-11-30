@@ -44,7 +44,7 @@
             border-bottom: 1px solid rgba(133, 79, 255, 0.1);
             position: relative;
         }
-        
+
         .n8n-chat-widget .close-button {
             position: absolute;
             right: 16px;
@@ -62,45 +62,198 @@
             font-size: 20px;
             opacity: 0.6;
         }
-        
+
         .n8n-chat-widget .close-button:hover {
             opacity: 1;
         }
-        
+
         .n8n-chat-widget .brand-header img {
             width: 32px;
             height: 32px;
         }
-        
+
         .n8n-chat-widget .brand-header span {
             font-size: 18px;
             font-weight: 500;
             color: var(--chat--color-font);
         }
 
-        .n8n-chat-widget .chat-message.bot h1,
-        .n8n-chat-widget .chat-message.bot h2,
-        .n8n-chat-widget .chat-message.bot h3 {
-            margin: 10px 0 4px;
+        .n8n-chat-widget .new-conversation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .n8n-chat-widget .welcome-text {
+            font-size: 24px;
             font-weight: 600;
-        }
-        
-        .n8n-chat-widget .chat-message.bot h1 { font-size: 20px; }
-        .n8n-chat-widget .chat-message.bot h2 { font-size: 18px; }
-        .n8n-chat-widget .chat-message.bot h3 { font-size: 16px; }
-
-        .n8n-chat-widget .chat-message.bot ul {
-            margin: 8px 0 8px 20px;
+            color: var(--chat--color-font);
+            margin-bottom: 24px;
+            line-height: 1.3;
         }
 
-        .n8n-chat-widget .chat-message.bot li {
-            margin: 4px 0;
+        .n8n-chat-widget .new-chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s;
+            font-weight: 500;
+            font-family: inherit;
+            margin-bottom: 12px;
         }
 
-        /* resto igual */
+        .n8n-chat-widget .new-chat-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .n8n-chat-widget .message-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .n8n-chat-widget .response-text {
+            font-size: 14px;
+            color: var(--chat--color-font);
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .n8n-chat-widget .chat-interface {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .n8n-chat-widget .chat-interface.active {
+            display: flex;
+        }
+
+        .n8n-chat-widget .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--chat--color-background);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .n8n-chat-widget .chat-message {
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .n8n-chat-widget .chat-message.user {
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
+            color: white;
+            align-self: flex-end;
+            box-shadow: 0 4px 12px rgba(133, 79, 255, 0.2);
+            border: none;
+        }
+
+        .n8n-chat-widget .chat-message.bot {
+            background: var(--chat--color-background);
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            color: var(--chat--color-font);
+            align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            white-space: normal;
+        }
+
+        .n8n-chat-widget .chat-input {
+            padding: 16px;
+            background: var(--chat--color-background);
+            border-top: 1px solid rgba(133, 79, 255, 0.1);
+            display: flex;
+            gap: 8px;
+        }
+
+        .n8n-chat-widget .chat-input textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(133, 79, 255, 0.2);
+            border-radius: 8px;
+            background: var(--chat--color-background);
+            color: var(--chat--color-font);
+            resize: none;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .n8n-chat-widget .chat-input textarea::placeholder {
+            color: var(--chat--color-font);
+            opacity: 0.6;
+        }
+
+        .n8n-chat-widget .chat-input button {
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .n8n-chat-widget .chat-input button:hover {
+            transform: scale(1.05);
+        }
+
+        .n8n-chat-widget .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--chat--color-primary) 0%, var(--chat--color-secondary) 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(133, 79, 255, 0.3);
+            z-index: 999;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .n8n-chat-widget .chat-toggle.position-left {
+            right: auto;
+            left: 20px;
+        }
+
+        .n8n-chat-widget .chat-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .n8n-chat-widget .chat-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
     `;
 
-    // Load Geist font
     const fontLink = document.createElement('link');
     fontLink.rel = 'stylesheet';
     fontLink.href = 'https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css';
@@ -139,6 +292,7 @@
     window.N8NChatWidgetInitialized = true;
 
     let currentSessionId = '';
+
     const widgetContainer = document.createElement('div');
     widgetContainer.className = 'n8n-chat-widget';
 
@@ -204,21 +358,15 @@
 
     function generateUUID() { return crypto.randomUUID(); }
 
-    // ⬇️⬇️ **AQUÍ ESTÁ LA FUNCIÓN NUEVA COMPLETA con HEADERS**
+    // ⬇️ EL ÚNICO CAMBIO: parseMarkdown soportando ### y listas
     function parseMarkdown(text) {
         return text
-            // Headers
-            .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-            .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-            .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-            // Bold
+            .replace(/^### (.*$)/gim, "<strong style='font-size:16px; display:block; margin:8px 0;'>$1</strong>")
+            .replace(/^## (.*$)/gim, "<strong style='font-size:18px; display:block; margin:8px 0;'>$1</strong>")
+            .replace(/^# (.*$)/gim, "<strong style='font-size:20px; display:block; margin:8px 0;'>$1</strong>")
             .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-            // Italic
             .replace(/\*(.*?)\*/g, "<em>$1</em>")
-            // Lists
-            .replace(/^- (.*$)/gim, "<ul><li>$1</li></ul>")
-            // Clean consecutive <ul>
-            .replace(/<\/ul>\s*<ul>/g, "");
+            .replace(/^- (.*$)/gim, "<li>$1</li>");
     }
 
     async function startNewConversation() {
