@@ -175,6 +175,7 @@
             color: var(--chat--color-font);
             align-self: flex-start;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            white-space: normal;
         }
 
         .n8n-chat-widget .chat-input {
@@ -384,7 +385,11 @@
 
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
-            botMessageDiv.textContent = Array.isArray(responseData) ? responseData[0].output : responseData.output;
+
+            // *** CAMBIO AQUI ***
+            botMessageDiv.innerHTML = (Array.isArray(responseData) ? responseData[0].output : responseData.output)
+                .replace(/\n/g, "<br>");
+
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
@@ -418,7 +423,11 @@
 
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'chat-message bot';
-            botMessageDiv.textContent = Array.isArray(data) ? data[0].output : data.output;
+
+            // *** CAMBIO AQUI ***
+            botMessageDiv.innerHTML = (Array.isArray(data) ? data[0].output : data.output)
+                .replace(/\n/g, "<br>");
+
             messagesContainer.appendChild(botMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         } catch (error) {
