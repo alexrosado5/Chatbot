@@ -254,15 +254,18 @@
         }
     `;
 
+    // Load Geist font
     const fontLink = document.createElement('link');
     fontLink.rel = 'stylesheet';
     fontLink.href = 'https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css';
     document.head.appendChild(fontLink);
 
+    // Inject styles
     const styleSheet = document.createElement('style');
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 
+    // Default configuration
     const defaultConfig = {
         webhook: { url: '', route: '' },
         branding: {
@@ -280,6 +283,7 @@
         }
     };
 
+    // Merge config
     const config = window.ChatWidgetConfig ?
         {
             webhook: { ...defaultConfig.webhook, ...window.ChatWidgetConfig.webhook },
@@ -358,15 +362,11 @@
 
     function generateUUID() { return crypto.randomUUID(); }
 
-    // ⬇️ EL ÚNICO CAMBIO: parseMarkdown soportando ### y listas
+    // ✅ FUNCIÓN PARA RENDERIZAR MARKDOWN BÁSICO
     function parseMarkdown(text) {
         return text
-            .replace(/^### (.*$)/gim, "<strong style='font-size:16px; display:block; margin:8px 0;'>$1</strong>")
-            .replace(/^## (.*$)/gim, "<strong style='font-size:18px; display:block; margin:8px 0;'>$1</strong>")
-            .replace(/^# (.*$)/gim, "<strong style='font-size:20px; display:block; margin:8px 0;'>$1</strong>")
-            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-            .replace(/\*(.*?)\*/g, "<em>$1</em>")
-            .replace(/^- (.*$)/gim, "<li>$1</li>");
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // negritas
+            .replace(/\*(.*?)\*/g, "<em>$1</em>"); // cursivas
     }
 
     async function startNewConversation() {
