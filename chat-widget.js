@@ -1,3 +1,4 @@
+
 // Chat Widget Script (con indicador typing estilo WhatsApp)
 // Chat Widget Script
 (function() {
